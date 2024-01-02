@@ -6,6 +6,7 @@ from .manager import UserManager
 
 # User Model de esta manera definimos totalmente el registro de usaurio
 class User(AbstractBaseUser, PermissionsMixin):
+    """Model definition for User."""
     
     GENDER_CHOICES =(
         ('M' , 'Male'),
@@ -13,6 +14,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('O' , 'Other'),
     )
     
+    # TODO: Define fields here
     username = models.CharField(
         max_length=10,
         unique=True,
@@ -54,8 +56,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.name + ' ' + self.last_name
 
     class Meta:
+        """Meta definition for Product."""
         verbose_name = 'User'
         verbose_name_plural = 'Users'
 
     def __str__(self) -> str:
+        """Unicode representation of Product."""
         return str(self.id) + ' ' + str(self.name) + ' ' + str(self.last_name)

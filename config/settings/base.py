@@ -23,7 +23,9 @@ BASE_APPS = [
 ]
 
 LOCAL_APSS = [
-    'apps.users'
+    'apps.base',
+    'apps.users',
+    'apps.products',
 ]
 
 THIRD_APPS = [
