@@ -5,16 +5,27 @@ from rest_framework import status
 # Apps : Base
 from apps.products.api.serializer.product_serializer import ProductSerializer
 from apps.base.api import GenericListAPIView
+ 
 
-
-class ProdutListAPIView(GenericListAPIView):
-    """ List Api View for Product. Method GET. """
-    serializer_class = ProductSerializer
-
-
-class ProductCreateAPIView(generics.CreateAPIView):
-    """Create Api View for Product. Method POST. """
+class ProductListCreateAPIView(generics.ListCreateAPIView):
+    """List and Create Api View for Product. Method POST - GET. """
     serializer_class =  ProductSerializer
+    
+    def get_queryset(self):
+        return self.get_serializer().Meta.model.objects.filter(state = True)
+
+    def post(self, request):
+        serializer = self.serializer_class(data =  request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    'menssage':'Producto creado correctamente! '
+                },
+                status = status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
 
 
 class ProductRetriveAPIView(generics.RetrieveAPIView):
