@@ -34,6 +34,7 @@ class ProductDestroyAPIView(generics.DestroyAPIView):
 
     def delete(self, request, pk=None):
         product = self.get_queryset().filter(id=pk).first()
+        
         if product:
             product.state = False
             product.save()
@@ -50,4 +51,34 @@ class ProductDestroyAPIView(generics.DestroyAPIView):
             status= status.HTTP_400_BAD_REQUEST
         )
 
+
+
+class PrtoductUpdateAPIView(generics.UpdateAPIView):
+    """ Update Api vire for Produc """
+    serializer_class = ProductSerializer
+    
+    def get_queryset(self, pk):     
+        return self.get_serializer().Meta.model.objects.filter(state = True).filter(id = pk).first()    
+
+    # Obtener la instacia 
+    def patch(self, request, pk = None):
+        if self.get_queryset(pk):
+            product_serializer = self.serializer_class(self.get_queryset(pk))
+            return Response(product_serializer.data, status= status.HTTP_200_OK)
+        return Response (
+            {
+                'error':'No existe un Prudcuto con estos datos!'
+            },
+            status= status.HTTP_400_BAD_REQUEST 
+        )
+
+    # Actualizamos la intancia
+    def put(self, request, pk = None):
         
+        if self.get_queryset(pk):
+            product_serializer = self.serializer_class(self.get_queryset(pk), data = request.data)
+            
+            if product_serializer.is_valid():
+                product_serializer.save()
+                return Response(product_serializer.data, status = status.HTTP_200_OK)
+        return Response(product_serializer.errors, status= status.HTTP_400_BAD_REQUEST)
