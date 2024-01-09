@@ -1,10 +1,6 @@
 # Sjango 
 from django.urls import path
-# Views
-from apps.products.api.views.product_views import (
-    ProductListCreateAPIView,
-    ProductRetrieveUpdateDestroyAPIView,
-)
+# Viewset
 from apps.products.api.views.general_views import (
     MeasureUnitListAPIView, 
     IdicatorListAPIView, 
@@ -27,15 +23,4 @@ urlpatterns = [
         CategoryProductsListAPIView.as_view(), 
         name='category'
     ),
-    path(
-        'product/', 
-        ProductListCreateAPIView.as_view(), 
-        name='product-create'
-    ),
-    path(
-        'product/<int:pk>', 
-        ProductRetrieveUpdateDestroyAPIView.as_view(), 
-        name='product-retrive-update-destroy'
-    ),
-]
-
+] 
