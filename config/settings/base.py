@@ -29,7 +29,8 @@ LOCAL_APSS = [
 ]
 
 THIRD_APPS = [
-    'rest_framework'
+    'rest_framework',
+    'drf_yasg'
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APSS + THIRD_APPS 
