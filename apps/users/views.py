@@ -34,7 +34,7 @@ class Login(ObtainAuthToken):
                         status= status.HTTP_201_CREATED
                     )
                 else: 
-                    
+                    """
                     # De esta manera no permitimos que haya mas de una cuenta abierrta al mismo timpo
                     all_session = Session.objects.filter(expire_date__gte = datetime.now())
                     if all_session.exists():
@@ -52,6 +52,14 @@ class Login(ObtainAuthToken):
                             'message': 'Inicio de sesion exitoso'
                         },
                         status= status.HTTP_201_CREATED
+                    )
+                    """
+                    token.delete()
+                    # El Usuario ya esta iniciado
+                    return Response(
+                        {
+                        'error': 'Ya se inicio session con este usuario.'
+                        }, status = status.HTTP_409_CONFLICT
                     )
             else:
                 return Response(
