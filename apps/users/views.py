@@ -1,3 +1,7 @@
+# Python
+from datetime import datetime
+# Django
+from django.contrib.sessions.models import Session
 # Res Framework
 from rest_framework import status
 from rest_framework.response import Response
@@ -11,10 +15,12 @@ class Login(ObtainAuthToken):
 
     def post (self, request, *args, **kwargs):
         login_serializer = self.serializer_class(data= request.data, context = {'request': request})  
+        
         # Si es validoe s porque ya tiene usuario y contrase;a asociado
         if login_serializer.is_valid():
             user = login_serializer.validated_data['user']
             if user.is_active:
+
                 # Si tiene un token lo trae en el caso contrario se lo creea 
                 token,create = Token.objects.get_or_create(user = user)
                 user_serialzier = UserTokenSerialzier(user)
@@ -27,7 +33,16 @@ class Login(ObtainAuthToken):
                         },
                         status= status.HTTP_201_CREATED
                     )
-                else:
+                else: 
+                    
+                    # De esta manera no permitimos que haya mas de una cuenta abierrta al mismo timpo
+                    all_session = Session.objects.filter(expire_date__gte = datetime.now())
+                    if all_session.exists():
+                        for session in all_session:
+                            session_data = session.get_decoded()
+                            if user.id == int(session_data.get('_auth_user_id')):
+                                session.delete()
+
                     token.delete()
                     token = Token.objects.create(user = user)
                     return Response(
@@ -52,9 +67,4 @@ class Login(ObtainAuthToken):
                 },
                 status= status.HTTP_400_BAD_REQUEST
             )
-        return Response(
-            {
-                'mensaje': 'Hola desde response'
-            },
-            status= status.HTTP_200_OK
-        )
+
