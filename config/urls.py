@@ -22,7 +22,8 @@ from django.urls import path, include
 # Drf Yasg
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
+# APPS : User
+from apps.users.views import Login
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -61,6 +62,11 @@ urlpatterns = [
         'users/',
         include('apps.users.api.urls')
     ), 
+    path(
+        'login',
+        Login.as_view(),
+        name = 'login'
+    ),
     path(
         'products/',
         include('apps.products.api.urls')

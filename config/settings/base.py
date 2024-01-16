@@ -10,7 +10,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-)=@7g6=-$*e&!$f=juuii$1=m*&20n6g8&n+g-)&$cwwuy#1t!'
 
-
 # Application definition
 
 BASE_APPS = [
@@ -30,6 +29,7 @@ LOCAL_APSS = [
 
 THIRD_APPS = [
     'rest_framework',
+    'rest_framework.authtoken',
     'drf_yasg'
 ]
 

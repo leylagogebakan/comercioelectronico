@@ -6,19 +6,19 @@ from apps.products.api.serializer.general_serialzier import  MeasureUnitSerializ
 
 
 class MeasureUnitViewsets(viewsets.ModelViewSet):
-    """ Class to list the units of measure """
+    """ Viewset  of 2measure """
     queryset = MeasureUnit.objects.all()
     serializer_class = MeasureUnitSerializer
 
     
 class IdicatorViewsets(viewsets.ModelViewSet):
-    """ Class to list the units of Indicator """
+    """ Viewset  of Indicator """
     queryset =  Idicator.objects.all()
     serializer_class = IdicatorSerializer
 
 
 class CategoryProductsViewsets(viewsets.ModelViewSet):
-    """ Class to list the units of Category """
+    """ Viewset  of Category """
     queryset =  CategoryProducts.objects.all()
     serializer_class = CategoryProductsSerializer
 
