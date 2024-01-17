@@ -4,6 +4,7 @@ from datetime import datetime
 from django.contrib.sessions.models import Session
 # Res Framework
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -52,7 +53,7 @@ class Login(ObtainAuthToken):
                             'message': 'Inicio de sesion exitoso'
                         },
                         status= status.HTTP_201_CREATED
-                    )
+                    )token.delete()
                     """
                     token.delete()
                     # El Usuario ya esta iniciado
@@ -74,5 +75,46 @@ class Login(ObtainAuthToken):
                     'error': 'Nombre de usuario o contrase;a incorrecta'
                 },
                 status= status.HTTP_400_BAD_REQUEST
+            )
+
+class Logout(APIView):
+    
+    def post(self, request, *arg, **kwargs):
+        try:
+
+            # Recuperamos el token enviado
+            token = request.POST.get('token')
+            token =  Token.objects.filter(key = token).first()
+            if token:
+                user = token.user 
+                all_session = Session.objects.filter(expire_date__gte = datetime.now())
+                if all_session.exists():
+                    for session in all_session:
+                        session_data = session.get_decoded()
+                        if user.id == int(session_data.get('_auth_user_id')):
+                            session.delete()
+
+                token.delete()
+                session_message = 'Sesiones de usuario eliminadas.'
+                token_message = 'Token eliminado'
+                return Response(
+                    {
+                        'token_message': token_message,
+                        'session_message' : session_message
+                    },
+                    status= status.HTTP_200_OK
+                )
+            return Response(
+                {
+                    'error': 'No se encontro un usuario con estas credenciales'
+                },
+                status= status.HTTP_400_BAD_REQUEST
+            )
+        except:
+            return Response(
+                {
+                    'error': 'No se a encontrado token en la peticion'
+                },
+                status= status.HTTP_409_CONFLICT
             )
 
