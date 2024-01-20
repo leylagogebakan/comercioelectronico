@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
 # Apps : Base
+from apps.users.authentication_mixins import Authentication
 from apps.products.api.serializer.product_serializer import ProductSerializer
 
-class ProductViewSet (viewsets.ModelViewSet):
+class ProductViewSet (Authentication, viewsets.ModelViewSet):
     """ View Set for Product. Method GET- POST - PUT - PATH - DELETE  """
     serializer_class = ProductSerializer
     

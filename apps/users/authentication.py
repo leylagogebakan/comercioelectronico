@@ -15,43 +15,43 @@ class ExpiringTokenAuthetication (TokenAuthentication):
     """
 
     def expire_in(self, token):
-        """
-        Tiempo de expiraion
-        """
-        time_elapsed = timezone.now() - token.create
+        # Tiempo de expiraion
+        
+        time_elapsed = timezone.now() - token.created
         lef_time = timedelta(seconds= settings.TOKEN_EXPIRED_AFTER_SECONDS) - time_elapsed
         return lef_time
 
     def is_token_expired(self, token ):
-        """
-        Verifica si el toke expiro
-        """
+        # Verifica si el toke expiro
+        
         return self.expire_in(token) < timedelta(seconds = 0)
 
     def token_expire_hanndle(self, token):
-        """
-        Devuelve el valor de las anteriores funciones
-        """
+        # Devuelve el valor de las anteriores funciones
+        
         is_expired = self.is_token_expired(token)        
         if is_expired:
-            print('Token expirado')
+            print('Token Expirado')
         return is_expired
     
     def authenticate_credentials(self, key):
-        """
-        Se le agrega un tiempo de expiracion al token
-        """        
+        # Se le agrega un tiempo de expiracion al token                
+        
+        message, token, user = None, None, None
         try:
             token =self.get_model().objects.select_related('user').get(key = key)
+            user = token.user
         except self.get_model().DoesNotExist:
-            raise AuthenticationFailed('Token Invalido')
+            message = 'Token Invalido'
         
-        if not token.user.is_active:
-            raise AuthenticationFailed('Usuario no activo o eliminado')
+        if token is not None:
+            if not token.user.is_active:
+                message = 'Usuario no activo o eliminado'
         
-        is_expired = self.token_expire_hanndle(token)
-        if is_expired:
-            raise AuthenticationFailed('Su9 toklen a expirado')
-        
-        return(token.user.token)
+        if token is not None:
+            is_expired = self.token_expire_hanndle(token)        
+            if is_expired:
+                message = 'Su token a expirado'
+
+        return(token,user,message)
 

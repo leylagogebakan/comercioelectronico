@@ -105,7 +105,7 @@ class Logout(APIView):
                     status= status.HTTP_200_OK
                 )
             return Response(
-                {
+                { 
                     'error': 'No se encontro un usuario con estas credenciales'
                 },
                 status= status.HTTP_400_BAD_REQUEST
