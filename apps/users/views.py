@@ -11,6 +11,30 @@ from rest_framework.authtoken.views import ObtainAuthToken
 # Apps : User
 from apps.users.api.serializers import UserTokenSerialzier
 
+class UserToken(APIView):
+    """
+    De esta manera traemos el neuvo token
+    """
+    def get (self, request, *arg, **kwargs):
+        username = request.GET.get('username')
+        try :
+            user_token = Token.objects.get(
+                user = UserTokenSerialzier().Meta.model.objects.filter(username = username).first()
+            )
+            return Response(
+                {
+                    'token': user_token.key
+                },
+                status = status.HTTP_200_OK
+            )
+        except:
+            return Response(
+                {
+                    'error': 'Credenciales enviadas incorrectas'
+                },
+                status = status.HTTP_400_BAD_REQUEST
+                )
+
 
 class Login(ObtainAuthToken):
 

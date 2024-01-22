@@ -13,7 +13,9 @@ class ExpiringTokenAuthetication (TokenAuthentication):
     """
     Class que nos permite ponerle un tiempoo de expiracion a el token
     """
-
+    
+    expired =  False
+    
     def expire_in(self, token):
         # Tiempo de expiraion
         
@@ -27,12 +29,17 @@ class ExpiringTokenAuthetication (TokenAuthentication):
         return self.expire_in(token) < timedelta(seconds = 0)
 
     def token_expire_hanndle(self, token):
-        # Devuelve el valor de las anteriores funciones
+        # Devuelve el valor de las anterior funciones
         
-        is_expired = self.is_token_expired(token)        
+        is_expired = self.is_token_expired(token)         
+        # Verificamos si el token expiro
         if is_expired:
-            print('Token Expirado')
-        return is_expired
+            self.expired = True
+            user = token.user
+            token.delete()
+            token =  self.get_model().objects.create(user = user)
+        
+        return is_expired, token
     
     def authenticate_credentials(self, key):
         # Se le agrega un tiempo de expiracion al token                
@@ -43,6 +50,7 @@ class ExpiringTokenAuthetication (TokenAuthentication):
             user = token.user
         except self.get_model().DoesNotExist:
             message = 'Token Invalido'
+            self.expired = True
         
         if token is not None:
             if not token.user.is_active:
@@ -53,5 +61,5 @@ class ExpiringTokenAuthetication (TokenAuthentication):
             if is_expired:
                 message = 'Su token a expirado'
 
-        return(token,user,message)
+        return(token, user, message, self.expired)
 

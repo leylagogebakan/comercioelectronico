@@ -36,7 +36,7 @@ THIRD_APPS = [
 INSTALLED_APPS = BASE_APPS + LOCAL_APSS + THIRD_APPS 
 
 # Tiempo de expiracion del Token
-TOKEN_EXPIRED_AFTER_SECONDS = 10
+TOKEN_EXPIRED_AFTER_SECONDS = 900
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
